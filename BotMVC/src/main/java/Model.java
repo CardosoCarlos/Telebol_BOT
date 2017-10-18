@@ -30,14 +30,6 @@ public class Model implements Subject{
 		}
 	}
 
-	public void searchOnlyTeam(Update update) {
-		String teamData = "";
-		for(Team team: teams){
-			teamData += team.getName() +"\n";
-		}
-		this.notifyObservers(update.message().chat().id(), teamData);
-	}
-
 	public void searchTeam(Update update){
 		String teamData = null;
 		for(Team team: teams){
@@ -51,6 +43,18 @@ public class Model implements Subject{
 		} else {
 			this.notifyObservers(update.message().chat().id(), "Team not found");
 		}
+
+	}
+
+	public void searchOnlyTeam(Update update) {
+		String teamData = "";
+		for(Team team: teams) {
+			teamData += team.getName() + "\n";
+//			System.out.println(teams.size());
+//			System.out.println(team.getName());
+		}
+		
+		this.notifyObservers(update.message().chat().id(), teamData);
 
 	}
 

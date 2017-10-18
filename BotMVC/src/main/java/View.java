@@ -63,10 +63,10 @@ public class View implements Observer{
 					this.callController(update);
 					
 				}else if(update.message().text().toLowerCase().equals("team")){
-					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"what's the team name?"));
 					setControllerSearch(new ControllerSearchOnlyTeam(model, this));
+					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"what's the team name?"));
+//					setControllerSearch(new ControllerSearchTeam(model, this));
 					this.callController(update);
-					setControllerSearch(new ControllerSearchTeam(model, this));
 					this.searchBehaviour = true;
 					
 				}else if(update.message().text().toLowerCase().equals("player")){
