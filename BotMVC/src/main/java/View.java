@@ -60,22 +60,29 @@ public class View implements Observer{
 				queuesIndex = update.updateId()+1;
 				
 				if(this.searchBehaviour==true){
+					this.callController(update);	
+				}
+				else if(update.message().text().toLowerCase().equals("leagues")){
+					setControllerSearch(new ControllerSearchLeagues(model, this));
+					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"Select your league... "));
 					this.callController(update);
-					
-				}else if(update.message().text().toLowerCase().equals("team")){
+					this.searchBehaviour = true;
+				}
+				else if(update.message().text().toLowerCase().equals("team")){
 					setControllerSearch(new ControllerSearchOnlyTeam(model, this));
 					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"what's the team name?"));
 //					setControllerSearch(new ControllerSearchTeam(model, this));
 					this.callController(update);
 					this.searchBehaviour = true;
 					
-				}else if(update.message().text().toLowerCase().equals("player")){
+				}
+				else if(update.message().text().toLowerCase().equals("player")){
 					setControllerSearch(new ControllerSearchPlayer(model, this));
 					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"what's the player name?"));
 					this.searchBehaviour = true;
 				}
 				else {
-					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"Type team or player"));
+					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"Type: \n Team \n Player \n Leagues"));
 				}
 				
 				

@@ -8,6 +8,8 @@ public class Model implements Subject{
 	private List<Observer> observers = new LinkedList<Observer>();
 
 	private List<Team> teams = new LinkedList<>();
+	
+	private List<Leagues> leagues = new LinkedList<>();
 
 	private static Model uniqueInstance;
 
@@ -29,7 +31,15 @@ public class Model implements Subject{
 			observer.update(chatId, studentsData);
 		}
 	}
-
+	
+	public void searchLeagues(Update update) {
+		String leaguesData = "";
+		for(Leagues league: leagues) {
+			leaguesData += league.getName() + "\n";
+		}
+		this.notifyObservers(update.message().chat().id(), leaguesData);
+	}
+	
 	public void searchTeam(Update update){
 		String teamData = null;
 		for(Team team: teams){
@@ -73,11 +83,15 @@ public class Model implements Subject{
 			this.notifyObservers(update.message().chat().id(), "Player not found");
 
 	}
-
+	
+	public void addLeagues(Leagues league) {
+		leagues.add(league);
+	}
+	
 	public void addTeam(Team team) {
 		teams.add(team);
 	}
-
+	
 	public void addPlayer(String time, Player player) {
 		for(Team team: teams)
 			if(team.getName().toLowerCase().equals(time.toLowerCase()))
