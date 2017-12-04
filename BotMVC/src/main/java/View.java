@@ -1,5 +1,4 @@
 import java.util.List;
-
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.TelegramBotAdapter;
 import com.pengrad.telegrambot.model.Update;
@@ -29,6 +28,8 @@ public class View implements Observer{
 	ControllerSearch controllerSearch; //Strategy Pattern -- connection View -> Controller
 	
 	boolean searchBehaviour = false;
+	boolean leagues = false;
+	public static String valorDig;
 	
 	private Model model;
 	
@@ -59,20 +60,31 @@ public class View implements Observer{
 				//updating queue's index
 				queuesIndex = update.updateId()+1;
 				
-				if(this.searchBehaviour==true){
+				if(this.searchBehaviour==true && leagues == false){
 					this.callController(update);	
 				}
+
 				else if(update.message().text().toLowerCase().equals("leagues")){
-					setControllerSearch(new ControllerSearchLeagues(model, this));
-					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"Select your league... "));
+					setControllerSearch(new ControllerSearchOnlyLeagues(model, this));
+					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"Select id from your league... "));
 					this.callController(update);
+					this.setControllerSearch(new ControllerSearchLeagues(model, this));
 					this.searchBehaviour = true;
+//					this.leagues = true;
 				}
+//				else if(update.message().text().matches("\\d") && leagues == true) {
+//					setControllerSearch(new ControllerSearchOnlyTeam(model, this));	
+//					valorDig = (update.message().text());
+//					this.callController(update);
+//					this.searchBehaviour = true;
+//					this.leagues = false;
+//					System.out.println(valorDig);
+//				}
 				else if(update.message().text().toLowerCase().equals("team")){
 					setControllerSearch(new ControllerSearchOnlyTeam(model, this));
 					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"what's the team name?"));
-//					setControllerSearch(new ControllerSearchTeam(model, this));
 					this.callController(update);
+					setControllerSearch(new ControllerSearchTeam(model, this));
 					this.searchBehaviour = true;
 					
 				}
@@ -107,6 +119,5 @@ public class View implements Observer{
 	public void sendTypingMessage(Update update){
 		baseResponse = bot.execute(new SendChatAction(update.message().chat().id(), ChatAction.typing.name()));
 	}
-	
 
 }

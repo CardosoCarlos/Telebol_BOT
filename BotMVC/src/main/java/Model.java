@@ -4,12 +4,16 @@ import java.util.List;
 import com.pengrad.telegrambot.model.Update;
 
 public class Model implements Subject{
+	
+	private Connection con;
 
 	private List<Observer> observers = new LinkedList<Observer>();
 
 	private List<Team> teams = new LinkedList<>();
 	
 	private List<Leagues> leagues = new LinkedList<>();
+	
+	private List<Team> teamLeague = new LinkedList<>();
 
 	private static Model uniqueInstance;
 
@@ -20,6 +24,10 @@ public class Model implements Subject{
 			uniqueInstance = new Model();
 		}
 		return uniqueInstance;
+	}
+	
+	public void registerCon(Connection con) {
+		this.con = con;
 	}
 
 	public void registerObserver(Observer observer){
@@ -33,6 +41,16 @@ public class Model implements Subject{
 	}
 	
 	public void searchLeagues(Update update) {
+		teamLeague.clear();
+		con.getDataLeaguesUmSo(con.leagueURL.get(update.message().text()));
+		String data = "";
+		for(Team team: teamLeague) {
+			data += team.getName() + "\n";
+		}
+		this.notifyObservers(update.message().chat().id(), data);
+	}
+	
+	public void searchOnlyLeagues(Update update) {
 		String leaguesData = "";
 		for(Leagues league: leagues) {
 			leaguesData += league.getName() + "\n";
@@ -41,6 +59,7 @@ public class Model implements Subject{
 	}
 	
 	public void searchTeam(Update update){
+		con.getDataTeam(update.message().text());
 		String teamData = null;
 		for(Team team: teams){
 			if(team.getName().equals(update.message().text())){
@@ -96,6 +115,10 @@ public class Model implements Subject{
 		for(Team team: teams)
 			if(team.getName().toLowerCase().equals(time.toLowerCase()))
 				team.addPlayer(player);
+	}
+
+	public void setTeamLeague(Team team) {
+		this.teamLeague.add(team);
 	}
 
 }
